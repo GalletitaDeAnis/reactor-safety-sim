@@ -1,0 +1,24 @@
+[package]
+name = "reactor-safety-sim"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+publish = false
+
+[lib]
+name = "reactor_safety_sim"
+path = "src/lib.rs"
+
+[dependencies]
+sim = { path = "crates/sim" }
+controller = { path = "crates/controller" }
+safety = { path = "crates/safety" }
+
+[workspace]
+members = [
+  "crates/sim",
+  "crates/controller",
+  "crates/safety",
+  "crates/cli",
+]
+resolver = "2"
