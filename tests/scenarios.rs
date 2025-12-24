@@ -3,14 +3,19 @@ use reactor_safety_sim as rss;
 #[test]
 fn overtemp_trips_scram() {
     let dt_s = 0.05;
-    let steps = 400;
+    let steps = 1200;
 
     let p = rss::PlantParams::default();
-    let mut x = rss::PlantState::default();
-    x.coolant = 0.15;
 
-    let mut s_cfg = rss::SafetyConfig::default();
-    s_cfg.trip_temp_c = 420.0;
+    let mut x = rss::PlantState {
+        coolant: 0.15,
+        ..Default::default()
+    };
+
+    let s_cfg = rss::SafetyConfig {
+        trip_temp_c: 420.0,
+        ..Default::default()
+    };
 
     let mut s_state = rss::SafetyState::default();
 

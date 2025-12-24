@@ -10,9 +10,9 @@ name = "reactor_safety_sim"
 path = "src/lib.rs"
 
 [dependencies]
-sim = { path = "crates/sim" }
-controller = { path = "crates/controller" }
-safety = { path = "crates/safety" }
+sim = { path = "crates/sim", version = "0.1.0" }
+controller = { path = "crates/controller", version = "0.1.0" }
+safety = { path = "crates/safety", version = "0.1.0" }
 
 [workspace]
 members = [
@@ -20,5 +20,6 @@ members = [
   "crates/controller",
   "crates/safety",
   "crates/cli",
+  "crates/gui",
 ]
 resolver = "2"

@@ -22,19 +22,10 @@ impl Default for SafetyConfig {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct SafetyState {
     pub scram: bool,
     pub reason: Option<TripReason>,
-}
-
-impl Default for SafetyState {
-    fn default() -> Self {
-        Self {
-            scram: false,
-            reason: None,
-        }
-    }
 }
 
 fn is_valid(cfg: &SafetyConfig, v: f64) -> bool {
@@ -44,7 +35,9 @@ fn is_valid(cfg: &SafetyConfig, v: f64) -> bool {
 fn two_out_of_three(flags: [bool; 3]) -> bool {
     let mut c = 0;
     for f in flags {
-        if f { c += 1; }
+        if f {
+            c += 1;
+        }
     }
     c >= 2
 }
@@ -57,7 +50,11 @@ pub fn evaluate(cfg: &SafetyConfig, state: &mut SafetyState, temps: [f64; 3]) {
     }
 
     // Validity
-    let valids = [is_valid(cfg, temps[0]), is_valid(cfg, temps[1]), is_valid(cfg, temps[2])];
+    let valids = [
+        is_valid(cfg, temps[0]),
+        is_valid(cfg, temps[1]),
+        is_valid(cfg, temps[2]),
+    ];
     if !two_out_of_three(valids) {
         state.scram = true;
         state.reason = Some(TripReason::SensorInvalid);

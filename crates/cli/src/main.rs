@@ -1,7 +1,7 @@
 use anyhow::Result;
 use clap::{Parser, ValueEnum};
 use controller::{Pid, PidConfig};
-use safety::{SafetyConfig, SafetyState, TripReason};
+use safety::{SafetyConfig, SafetyState};
 use sim::{PlantParams, PlantState, Sensor, SensorFault};
 
 #[derive(Clone, Debug, ValueEnum)]
@@ -13,7 +13,11 @@ enum Scenario {
 }
 
 #[derive(Parser, Debug)]
-#[command(name = "reactor-safety-sim", version, about = "Generic safety-critical control simulation (portfolio)")]
+#[command(
+    name = "reactor-safety-sim",
+    version,
+    about = "Generic safety-critical control simulation (portfolio)"
+)]
 struct Args {
     #[arg(value_enum, long, default_value = "normal")]
     scenario: Scenario,
@@ -64,8 +68,10 @@ fn main() -> Result<()> {
     let mut pid = Pid::new(PidConfig::default());
 
     // Safety
-    let mut s_cfg = SafetyConfig::default();
-    s_cfg.trip_temp_c = args.trip_temp;
+    let s_cfg = SafetyConfig {
+        trip_temp_c: args.trip_temp,
+        ..Default::default()
+    };
     let mut s_state = SafetyState::default();
 
     // Sensors
@@ -136,7 +142,13 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn apply_scenario(s: &Scenario, x: &mut PlantState, s1: &mut Sensor, s2: &mut Sensor, s3: &mut Sensor) {
+fn apply_scenario(
+    s: &Scenario,
+    x: &mut PlantState,
+    s1: &mut Sensor,
+    s2: &mut Sensor,
+    s3: &mut Sensor,
+) {
     match s {
         Scenario::Normal => {
             x.coolant = 0.6;

@@ -1,20 +1,43 @@
+# cargo-deny configuration (compatible with v0.18+)
+# Goal: strict-by-default licensing + basic supply-chain hygiene, without being too painful early on.
+
 [advisories]
 db-urls = ["https://github.com/RustSec/advisory-db"]
-unmaintained = "warn"
+# Fail only if an unmaintained advisory hits a direct workspace dependency
+unmaintained = "workspace"
+# Treat yanked crates as errors (recommended for reproducible builds)
 yanked = "deny"
 ignore = []
 
-[licenses]
-unlicensed = "deny"
-allow = ["MIT", "Apache-2.0", "BSD-3-Clause", "ISC", "Zlib", "Unicode-DFS-2016"]
-deny = []
-copyleft = "deny"
-confidence-threshold = 0.93
-
 [bans]
+# Early: warn (later you can tighten to "deny")
 multiple-versions = "warn"
 wildcards = "deny"
+skip = []
+
+[licenses]
+# All licenses are denied unless explicitly allowed.
+unused-allowed-license = "warn"
+confidence-threshold = 0.90
+allow = [
+  "Apache-2.0",
+  "MIT",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "Zlib",
+  "0BSD",
+  "CC0-1.0",
+  "Unicode-3.0",
+  "Unicode-DFS-2016",
+  "Apache-2.0 WITH LLVM-exception",
+]
+
+[licenses.private]
+# Ignore license checks for unpublished workspace crates (handy for monorepos)
+ignore = true
 
 [sources]
 unknown-registry = "deny"
 unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

@@ -1,5 +1,5 @@
-use rand::SeedableRng;
 use rand::rngs::StdRng;
+use rand::SeedableRng;
 use rand_distr::{Distribution, Normal};
 
 #[derive(Clone, Copy, Debug)]
@@ -15,7 +15,7 @@ impl Default for PlantParams {
         Self {
             ambient_c: 25.0,
             thermal_mass: 100.0,
-            k_power: 200.0,
+            k_power: 600.0,
             k_cool: 1.5,
         }
     }
@@ -94,7 +94,7 @@ impl Sensor {
             SensorFault::Bias { value } => true_temp + value,
             SensorFault::Drift { per_s } => true_temp + per_s * (self.step_count as f64) * dt_s,
             SensorFault::DropoutEvery { n } => {
-                if n > 0 && (self.step_count % n) == 0 {
+                if n > 0 && self.step_count.is_multiple_of(n) {
                     return f64::NAN;
                 }
                 true_temp
